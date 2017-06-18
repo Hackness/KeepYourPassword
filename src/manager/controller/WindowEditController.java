@@ -24,6 +24,8 @@ import java.util.ResourceBundle;
 /**
  * Created by Hack
  * Date: 09.04.2017 13:18
+ *
+ * Controller of edit window
  */
 public class WindowEditController extends AbstractPaneController {
     @FXML private VBox vbox;
@@ -104,10 +106,6 @@ public class WindowEditController extends AbstractPaneController {
     @Override
     protected Pane getPane() {
         return vbox;
-    }
-
-    public boolean isEditing() {
-        return addElements.keySet().stream().anyMatch(ElementEditController::isElementEditing);
     }
 
     private boolean check() {

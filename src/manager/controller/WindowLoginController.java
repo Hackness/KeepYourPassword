@@ -22,13 +22,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
+/**
+ * Created by Hack
+ * Date: ?
+ *
+ * Controller of login window. Contains access check and loading processes
+ */
 public class WindowLoginController extends AbstractController {
     @FXML private PasswordField pwdFld;
     @FXML private Button loginBtn;
     @FXML private Button exitBtn;
     private EventHandler<ActionEvent> pwdMatchAction = event -> {
-        WindowLoadingController loading = Main.showLoading();
+        WindowLoadingController loading = Main.createAndShowLoading();
         List<Listener> listeners = new ArrayList<>();
         loading.addProgress(10);
         if (Main.isDataLoaded())

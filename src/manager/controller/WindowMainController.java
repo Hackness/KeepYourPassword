@@ -18,6 +18,8 @@ import java.util.*;
 /**
  * Created by Hack
  * Date: 08.04.2017 3:36
+ *
+ * Controller of main window
  */
 public class WindowMainController extends AbstractPaneController {
     @FXML private VBox vbox;

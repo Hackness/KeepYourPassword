@@ -16,6 +16,8 @@ import java.util.ResourceBundle;
 /**
  * Created by Hack
  * Date: 08.04.2017 16:43
+ *
+ * Controller of every data row on main window
  */
 public class ElementMainController extends AbstractController {
     private DataEntry data;

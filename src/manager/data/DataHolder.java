@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 /**
  * Created by Hack
  * Date: 09.04.2017 0:08
+ *
+ * Object of holder that will be serialize
  */
 public class DataHolder extends ArrayList<DataEntry> {
     private final String pwdHash;

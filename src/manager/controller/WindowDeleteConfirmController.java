@@ -13,6 +13,8 @@ import java.util.ResourceBundle;
 /**
  * Created by Hack
  * Date: 03.05.2017 5:50
+ *
+ * Controller of window that is creating to confirm deletion
  */
 public class WindowDeleteConfirmController extends AbstractController {
     @FXML private Button confirmBtn;

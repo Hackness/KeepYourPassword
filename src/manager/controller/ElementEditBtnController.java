@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 /**
  * Created by Hack
  * Date: 10.04.2017 2:03
+ *
+ * Controller of add button in edit window
  */
 public class ElementEditBtnController extends AbstractController {
     @FXML private Button addBtn;

@@ -21,6 +21,7 @@ import manager.model.instance.LoadingNotifier;
 //TODO: import settings
 //TODO: options page
 //TODO: scheduled logout
+//TODO: slf4j integration
 public class Main extends Application {
     private static Stage primaryStage;
     public static String loginPassword = "";
@@ -37,7 +38,7 @@ public class Main extends Application {
         Listeners.add(OnDataLoaded.class, () -> dataLoaded = true, true);
         ThreadPoolManager.getInstance().dependentExecute(() -> DataManager.getInstance().load(), "dataLoad");
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Password Manager");
+        primaryStage.setTitle("KeepYourPassword");
         primaryStage.setScene(NodeType.WINDOW_LOGIN.getScene());
         primaryStage.show();
     }
@@ -48,16 +49,19 @@ public class Main extends Application {
         super.stop();
     }
 
+    /**
+     * show some scene in primary stage
+     */
     public static void showScene(Scene scene) {
         primaryStage.close();
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    public static boolean isDataLoaded() {
-        return dataLoaded;
-    }
-
+    /**
+     * show some modal scene in additional stage
+     * @param wait - if true primary stage will be sleeping
+     */
     public static void showModal(Scene scene, String title, boolean wait) {
         Stage stage = new Stage();
         stage.setResizable(false);
@@ -71,11 +75,11 @@ public class Main extends Application {
             stage.show();
     }
 
-    public static void showModal(Scene scene, String title) {
-        showModal(scene, title, true);
-    }
-
-    public static WindowLoadingController showLoading() {
+    /**
+     * This method will create loading scene in new stage, show it to the user, and then return the object of loading
+     * @return - created loading object
+     */
+    public static WindowLoadingController createAndShowLoading() {
         Stage stage = new Stage();
         stage.setAlwaysOnTop(true);
         stage.setResizable(false);
@@ -86,9 +90,21 @@ public class Main extends Application {
         return controller;
     }
 
+    /**
+     * Show some String error in special window
+     * @param desc - description of error
+     */
     public static void showError(String desc) {
         System.out.println(desc);
         showModal(NodeType.WINDOW_ERROR.getScene(new WindowErrorController(desc)), "Error");
+    }
+
+    public static void showModal(Scene scene, String title) {
+        showModal(scene, title, true);
+    }
+
+    public static boolean isDataLoaded() {
+        return dataLoaded;
     }
 
     private static boolean setDebugMode() {

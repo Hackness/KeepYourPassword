@@ -8,6 +8,8 @@ import manager.NodeType;
 /**
  * Created by Hack
  * Date: 14.04.2017 1:31
+ *
+ * Abstract controller that contains some pane
  */
 public abstract class AbstractPaneController extends AbstractController {
     protected abstract Pane getPane();

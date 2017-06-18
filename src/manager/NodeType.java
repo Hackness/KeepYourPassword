@@ -12,6 +12,8 @@ import java.io.IOException;
 /**
  * Created by Hack
  * Date: 08.04.2017 0:29
+ *
+ * Enum of all allowed scenes. Scene name should be equal with enum name (case ignoring)
  */
 public enum NodeType {
     WINDOW_LOGIN(180, 119),
@@ -34,6 +36,11 @@ public enum NodeType {
 
     NodeType() {}
 
+    /**
+     * Load new scene from fxml file
+     * @param controller - controller of fxml
+     * @return - created scene
+     */
     public Scene getScene(AbstractController controller) {
         Scene scene = init(new Scene(loadFXML(controller), width, height));
         Listeners.onAction(OnWindowLoaded.class, l -> l.onAction(this, controller));
@@ -48,6 +55,11 @@ public enum NodeType {
         return scene;
     }
 
+    /**
+     * Load some fxml as Parent object
+     * @param controller - controller of fxml
+     * @return - created Parent
+     */
     public Parent loadFXML(Object controller) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/" + name().toLowerCase() + ".fxml"));

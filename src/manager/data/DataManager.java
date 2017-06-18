@@ -28,7 +28,7 @@ import java.util.function.UnaryOperator;
  */
 public class DataManager {
     private static final String CRYPT_ALGORITHM = "AES";
-    private static final String DIR = System.getenv("appdata") + "\\PasswordManager";
+    private static final String DIR = System.getenv("appdata") + "\\Hacknessdev\\KeepYourPassword";
     private static final String FILE = DIR + "\\data";
     private static final String LOG_DIR = DIR + "\\log";
     private static final String BACKUP_DIR = DIR + "\\backup";
@@ -67,6 +67,9 @@ public class DataManager {
             }
     }
 
+    /**
+     * This method will redirect standard output stream into log files
+     */
     public static void logging() {
         if (Main.isDebugMode())
             return;
@@ -94,7 +97,7 @@ public class DataManager {
     }
 
     /**
-     * init data encrypt/decrypt with auth password key. Using only after auth!
+     * init data encryptor/decryptor with auth password key. Using only after auth!
      */
     public void init() {
         try {
@@ -114,6 +117,9 @@ public class DataManager {
         }
     }
 
+    /**
+     * Primary save of encrypted data
+     */
     public void save() {
         try (ObjectOutputStream out = new ObjectOutputStream(new CipherOutputStream(new FileOutputStream(FILE),
                 fileEncryptCipher))) {
@@ -147,28 +153,49 @@ public class DataManager {
         return holder;
     }
 
+    /**
+     * decrypt all data entry's into new list
+     * @return - decrypted list
+     */
+    @Deprecated
     public ArrayList<DataEntry> getDecryptedData() {
         ArrayList<DataEntry> list = new ArrayList<>();
         holder.forEach(dataEntry -> list.add(decryptData(new DataEntry(dataEntry))));
         return list;
     }
 
+    /**
+     * Add and encrypt some data entry
+     * @param data - non-encrypted data entry
+     */
     public void add(DataEntry data) {
         encryptData(data);
         holder.add(data);
         onChange();
     }
 
+    /**
+     * find and delete data by location&login pair
+     */
     public void remove(String location, String login) {
         holder.remove(holder.get(encryptData(location), encryptData(login)));
         onChange();
     }
 
+    /**
+     * update cache on main window and start data save task into new thread.
+     * Call this method after any structure changes.
+     */
     private void onChange() {
         ThreadPoolManager.getInstance().execute(this::save);
         Main.getMainController().updateCache();
     }
 
+    /**
+     * Decrypt some string
+     * @param data - encrypted string
+     * @return - pure string
+     */
     public String decryptData(String data) {
         try {
             return new String(dataDecryptCipher.doFinal(Base64.decode(data.getBytes())));
@@ -179,21 +206,11 @@ public class DataManager {
         }
     }
 
-    private DataEntry encryptData(DataEntry data) {
-        data.entrySet().forEach(entry -> entry.setValue(encryptData(entry.getValue())));
-        return data;
-    }
-
-    private DataEntry decryptData(DataEntry data) {
-        data.entrySet().forEach(entry -> entry.setValue(decryptData(entry.getValue())));
-        return data;
-    }
-
-    public void editData(String location, String login, UnaryOperator<DataEntry> action) {
-        encryptData(action.apply(decryptData(holder.get(encryptData(location), encryptData(login)))));
-        onChange();
-    }
-
+    /**
+     * Encrypt some string
+     * @param data - non-encrypted string
+     * @return - as you expected: encrypted string
+     */
     public String encryptData(String data) {
         try {
             return Base64.encode(dataEncryptCipher.doFinal(data.getBytes()));
@@ -204,11 +221,52 @@ public class DataManager {
         }
     }
 
+    /**
+     * Encrypt whole data in entry
+     * @param data - non-encrypted data entry
+     * @return - this entry
+     */
+    private DataEntry encryptData(DataEntry data) {
+        data.entrySet().forEach(entry -> entry.setValue(encryptData(entry.getValue())));
+        return data;
+    }
+
+    /**
+     * Decrypt whole data in entry
+     * @param data - encrypted data entry
+     * @return - this entry
+     */
+    private DataEntry decryptData(DataEntry data) {
+        data.entrySet().forEach(entry -> entry.setValue(decryptData(entry.getValue())));
+        return data;
+    }
+
+    /**
+     * Find some data by location&login pair, decrypt, apply an action on it, then encrypt back
+     * @param action - desired action with entry as lambda
+     */
+    public void editData(String location, String login, UnaryOperator<DataEntry> action) {
+        encryptData(action.apply(decryptData(holder.get(encryptData(location), encryptData(login)))));
+        onChange();
+    }
+
+    /**
+     * This method generate two different keys: before authentification and after.
+     * Before auth we don't know users password and use only hwid as key.
+     * After auth password will participate in key creating.
+     * @return
+     */
     private SecretKeySpec generateKey() {
         String k = new SystemInfo().getHardware().getProcessor().getProcessorID() + Main.loginPassword;
         return new SecretKeySpec(k.substring(k.length() > 16 ? k.length() - 16 : 0, k.length()).getBytes(), "AES");
     }
 
+    /**
+     * Create a full copy of two existing entry's
+     * @param source - source of copied data
+     * @param dest - destination of copied data
+     * @return - destination entry
+     */
     public DataEntry fullCopy(DataEntry source, DataEntry dest) {
         dest.clear();
         source.forEach(dest::put);
@@ -217,7 +275,6 @@ public class DataManager {
 
     /**
      * Makes backup of existing data file in new thread.
-     *
      * @param name - name that will be used in backups name as header. Can be empty.
      */
     private void makeBackup(String name) {

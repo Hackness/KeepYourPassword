@@ -11,6 +11,8 @@ import java.util.ResourceBundle;
 /**
  * Created by Hack
  * Date: 03.05.2017 18:29
+ *
+ * Controller of error window
  */
 public class WindowErrorController extends AbstractController {
     private String sDesc;

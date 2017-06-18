@@ -13,6 +13,8 @@ import java.util.ResourceBundle;
 /**
  * Created by Hack
  * Date: 05.05.2017 6:30
+ *
+ * Controller of loading window
  */
 public class WindowLoadingController extends AbstractController {
     @FXML private ProgressBar bar;

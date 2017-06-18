@@ -12,6 +12,8 @@ import java.util.ResourceBundle;
 /**
  * Created by Hack
  * Date: 09.04.2017 13:27
+ *
+ * Controller of every data row on edit window
  */
 public class ElementEditController extends AbstractController {
     @FXML private Label name;

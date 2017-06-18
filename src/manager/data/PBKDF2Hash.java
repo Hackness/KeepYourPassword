@@ -10,6 +10,7 @@ import java.security.spec.KeySpec;
 import java.util.regex.Pattern;
 
 /**
+ * Hash check helper
  * @author unknown
  */
 public class PBKDF2Hash

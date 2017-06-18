@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 /**
  * Created by Hack
  * Date: 09.04.2017 0:23
+ *
+ * Object of some data entry
  */
 public class DataEntry extends LinkedHashMap<String, String> {
     public static final String LOCATION = "Location";
