@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="260.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ScrollPane fx:id="scroll" prefHeight="220.0" prefWidth="330.0">
+         <content>
+            <VBox fx:id="vbox" prefHeight="30.0" prefWidth="30.0" />
+         </content>
+      </ScrollPane>
+      <Button fx:id="saveBtn" layoutX="203.0" layoutY="228.0" mnemonicParsing="false" text="Save" />
+      <Button fx:id="cancelBtn" layoutX="250.0" layoutY="228.0" mnemonicParsing="false" text="Cancel" />
+   </children>
+</AnchorPane>

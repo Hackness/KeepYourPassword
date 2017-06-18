@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="129.0" prefWidth="190.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="manager.controller.WindowLoginController">
+   <children>
+      <Label layoutX="53.0" layoutY="7.0" text="Authorization">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <PasswordField fx:id="pwdFld" layoutX="21.0" layoutY="58.0" />
+      <Button fx:id="loginBtn" layoutX="21.0" layoutY="91.0" mnemonicParsing="false" prefWidth="70.0" text="Log In" />
+      <Button fx:id="exitBtn" layoutX="99.0" layoutY="91.0" mnemonicParsing="false" prefWidth="70.0" text="Exit" />
+      <Label layoutX="21.0" layoutY="37.0" text="Password:" />
+   </children>
+</AnchorPane>

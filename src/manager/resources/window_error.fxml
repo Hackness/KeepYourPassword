@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="255.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="btn" layoutX="193.0" layoutY="61.0" mnemonicParsing="false" text="Okay :(" />
+      <Label fx:id="desc" alignment="TOP_LEFT" layoutX="5.0" layoutY="5.0" prefHeight="51.0" prefWidth="247.0" text="Error desc" wrapText="true" />
+   </children>
+</AnchorPane>

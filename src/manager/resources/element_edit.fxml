@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="307.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TextField fx:id="fakeEditLoc" layoutX="6.0" layoutY="3.0" prefHeight="25.0" prefWidth="115.0" visible="false" />
+      <Label fx:id="name" layoutX="10.0" layoutY="7.0" text="FieldName" />
+      <TextField fx:id="value" layoutX="128.0" layoutY="3.0" promptText="Required Value" />
+      <Button fx:id="deleteBtn" layoutX="277.0" layoutY="3.0" mnemonicParsing="false" text="✕" />
+      <TextField fx:id="editLoc" layoutX="6.0" layoutY="3.0" prefHeight="25.0" prefWidth="115.0" promptText="Field Name" visible="false" />
+   </children>
+</Pane>

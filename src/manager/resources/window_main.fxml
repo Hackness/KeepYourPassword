@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.media.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="manager.controller.WindowMainController">
+   <children>
+      <ScrollPane fx:id="scroll" focusTraversable="false" layoutY="45.0" prefHeight="355.0" prefWidth="640.0">
+         <content>
+            <VBox fx:id="vbox" prefWidth="440.0" />
+         </content>
+      </ScrollPane>
+      <TextField fx:id="srch" focusTraversable="false" layoutX="14.0" layoutY="10.0" promptText="Search" />
+      <Button fx:id="addBtn" layoutX="588.0" layoutY="10.0" mnemonicParsing="false" text="Add" />
+   </children>
+</Pane>
