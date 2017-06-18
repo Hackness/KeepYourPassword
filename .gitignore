@@ -19,6 +19,8 @@
 *.rar
 
 out/
+.idea/
+.eclipse/
 *.idea
 *.eclipse
 
