@@ -59,6 +59,7 @@ public class WindowLoginController extends AbstractController {
                 Main.loginPassword = pwdFld.getText();
                 DataManager.getInstance().init();
                 Platform.runLater(() -> Main.showScene(NodeType.WINDOW_MAIN.getScene()));
+                Main.setAuthorised();
             } else {
                 Platform.runLater(() -> {
                     Main.showScene(NodeType.WINDOW_LOGIN.getScene());

@@ -17,17 +17,19 @@ import manager.model.instance.LoadingNotifier;
 //+ listeners
 //+ loading
 //+ threading with dependencies
+//TODO: system tray
 //TODO: password gen
 //TODO: import settings
 //TODO: options page
-//TODO: scheduled logout
 //TODO: slf4j integration
+//TODO: url references into browser from location field
 public class Main extends Application {
     private static Stage primaryStage;
     public static String loginPassword = "";
     private static WindowMainController mainController;
     private static boolean debugMode = false;
     private static boolean dataLoaded = false;
+    private static boolean authorised = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -39,8 +41,7 @@ public class Main extends Application {
         ThreadPoolManager.getInstance().dependentExecute(() -> DataManager.getInstance().load(), "dataLoad");
         primaryStage.setResizable(false);
         primaryStage.setTitle("KeepYourPassword");
-        primaryStage.setScene(NodeType.WINDOW_LOGIN.getScene());
-        primaryStage.show();
+        showScene(NodeType.WINDOW_LOGIN.getScene());
     }
 
     @Override
@@ -56,6 +57,7 @@ public class Main extends Application {
         primaryStage.close();
         primaryStage.setScene(scene);
         primaryStage.show();
+        SessionManager.getInstance().startListening(primaryStage);
     }
 
     /**
@@ -69,6 +71,8 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.initOwner(primaryStage);
         stage.initModality(Modality.WINDOW_MODAL);
+        SessionManager.getInstance().startListening(stage);
+        stage.setOnCloseRequest(e -> SessionManager.getInstance().startListening(primaryStage));
         if (wait)
             stage.showAndWait();
         else
@@ -125,5 +129,22 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void logout() {
+        loginPassword = "";
+        showScene(NodeType.WINDOW_LOGIN.getScene());
+    }
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public static boolean isAuthorised() {
+        return authorised;
+    }
+
+    public static void setAuthorised() {
+        Main.authorised = true;
     }
 }

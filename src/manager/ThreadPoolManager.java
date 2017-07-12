@@ -9,7 +9,8 @@ import java.util.concurrent.*;
  */
 public class ThreadPoolManager {
     private static final ThreadPoolManager instance = new ThreadPoolManager();
-    private ExecutorService executor = Executors.newFixedThreadPool(4);
+    private ExecutorService executor = Executors.newFixedThreadPool(getThreadNumber());
+    private ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(getThreadNumber());
     private Map<String, Future<?>> dependencies = new ConcurrentHashMap<>();
 
     public static ThreadPoolManager getInstance() {
@@ -25,7 +26,12 @@ public class ThreadPoolManager {
     }
 
     public void shutdown() {
-        executor.shutdown();
+        executor.shutdownNow();
+        scheduledExecutor.shutdownNow();
+    }
+
+    public ScheduledFuture<?> schedule(Runnable r, long millisDelay) {
+        return scheduledExecutor.schedule(r, millisDelay, TimeUnit.MILLISECONDS);
     }
 
     public void dependentExecute(Runnable r, String myNameAsDependency, String ... myDependencies) {
@@ -42,5 +48,9 @@ public class ThreadPoolManager {
             dependencies.put(myNameAsDependency, executor.submit(r));
         else
             executor.execute(r);
+    }
+
+    private int getThreadNumber() {
+        return Math.min(4, Math.max(1, Runtime.getRuntime().availableProcessors()));
     }
 }
