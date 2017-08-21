@@ -8,6 +8,7 @@ import manager.listener.Listeners;
 import manager.listener.impl.OnDataInitialized;
 import manager.listener.impl.OnDataLoadStart;
 import manager.listener.impl.OnDataLoaded;
+import manager.properties.Properties;
 import oshi.SystemInfo;
 
 import javax.crypto.Cipher;
@@ -18,8 +19,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 /**
@@ -27,11 +26,6 @@ import java.util.function.UnaryOperator;
  * Date: 08.04.2017 22:12
  */
 public class DataManager {
-    private static final String CRYPT_ALGORITHM = "AES";
-    private static final String DIR = System.getenv("appdata") + "\\Hacknessdev\\KeepYourPassword";
-    private static final String FILE = DIR + "\\data";
-    private static final String LOG_DIR = DIR + "\\log";
-    private static final String BACKUP_DIR = DIR + "\\backup";
     private static final long LOG_LIFETIME = TimeUnit.DAYS.toMillis(1);
     private static DataManager instance;
     private DataHolder holder;
@@ -51,15 +45,15 @@ public class DataManager {
     }
 
     private DataManager() throws Exception {
-        File dir = new File(DIR);
+        File dir = new File(Properties.DIR);
         SecretKeySpec key = generateKey();
-        fileEncryptCipher = Cipher.getInstance(CRYPT_ALGORITHM);
+        fileEncryptCipher = Cipher.getInstance(Properties.CRYPT_ALGORITHM);
         fileEncryptCipher.init(Cipher.ENCRYPT_MODE, key);
-        fileDecryptCipher = Cipher.getInstance(CRYPT_ALGORITHM);
+        fileDecryptCipher = Cipher.getInstance(Properties.CRYPT_ALGORITHM);
         fileDecryptCipher.init(Cipher.DECRYPT_MODE, key);
         if (!dir.exists())
             try {
-                Files.createDirectory(new File(DIR).toPath());
+                Files.createDirectory(new File(Properties.DIR).toPath());
             } catch (IOException e) {
                 Main.showError("Cannot create file directory! " +
                         "Check your permissions or try to start the program in administrator mode.");
@@ -71,10 +65,10 @@ public class DataManager {
      * This method will redirect standard output stream into log files
      */
     public static void logging() {
-        if (Main.isDebugMode())
+        if (Properties.DEBUG_MODE)
             return;
         try {
-            File logDir = new File(LOG_DIR);
+            File logDir = new File(Properties.LOG_DIR);
             if (logDir.exists())
                 Files.walk(logDir.toPath()).forEach(path -> {
                     if (path.toFile().lastModified() + LOG_LIFETIME < System.currentTimeMillis())
@@ -87,7 +81,7 @@ public class DataManager {
             else
                 Files.createDirectories(logDir.toPath());
             PrintStream st = new PrintStream(
-                    new FileOutputStream(LOG_DIR + "\\" + Util.makeFileNameWithDate("stdout", "log")));
+                    new FileOutputStream(Properties.LOG_DIR + "\\" + Util.makeFileNameWithDate("stdout", "log")));
             System.setErr(st);
             System.setOut(st);
         } catch (Exception e) {
@@ -106,9 +100,9 @@ public class DataManager {
                 holder = new DataHolder();
             }
             SecretKeySpec key = generateKey();
-            dataEncryptCipher = Cipher.getInstance(CRYPT_ALGORITHM);
+            dataEncryptCipher = Cipher.getInstance(Properties.CRYPT_ALGORITHM);
             dataEncryptCipher.init(Cipher.ENCRYPT_MODE, key);
-            dataDecryptCipher = Cipher.getInstance(CRYPT_ALGORITHM);
+            dataDecryptCipher = Cipher.getInstance(Properties.CRYPT_ALGORITHM);
             dataDecryptCipher.init(Cipher.DECRYPT_MODE, key);
             Listeners.onAction(OnDataInitialized.class);
         } catch (Exception e) {
@@ -121,7 +115,7 @@ public class DataManager {
      * Primary save of encrypted data
      */
     public void save() {
-        try (ObjectOutputStream out = new ObjectOutputStream(new CipherOutputStream(new FileOutputStream(FILE),
+        try (ObjectOutputStream out = new ObjectOutputStream(new CipherOutputStream(new FileOutputStream(Properties.DATA_FILE),
                 fileEncryptCipher))) {
             out.writeObject(holder);
         } catch (IOException e) {
@@ -134,10 +128,10 @@ public class DataManager {
      * load data to the holder, if data exists and is compatible.
      */
     public void load() {
-        if (!new File(FILE).exists())
+        if (!new File(Properties.DATA_FILE).exists())
             return;
         Listeners.onAction(OnDataLoadStart.class);
-        try (ObjectInputStream in = new ObjectInputStream(new CipherInputStream(new FileInputStream(FILE),
+        try (ObjectInputStream in = new ObjectInputStream(new CipherInputStream(new FileInputStream(Properties.DATA_FILE),
                 fileDecryptCipher))) {
             holder = (DataHolder) in.readObject();
             Listeners.onAction(OnDataLoaded.class);
@@ -188,7 +182,7 @@ public class DataManager {
      */
     private void onChange() {
         ThreadPoolManager.getInstance().execute(this::save);
-        Main.getMainController().updateCache();
+        Properties.MAIN_CONTROLLER_REF.updateCache();
     }
 
     /**
@@ -257,7 +251,7 @@ public class DataManager {
      * @return
      */
     private SecretKeySpec generateKey() {
-        String k = new SystemInfo().getHardware().getProcessor().getProcessorID() + Main.loginPassword;
+        String k = new SystemInfo().getHardware().getProcessor().getProcessorID() + Properties.LOGIN_PASSWORD;
         return new SecretKeySpec(k.substring(k.length() > 16 ? k.length() - 16 : 0, k.length()).getBytes(), "AES");
     }
 
@@ -279,14 +273,15 @@ public class DataManager {
      */
     private void makeBackup(String name) {
         ThreadPoolManager.getInstance().execute(() -> {
-            File file = new File(FILE);
+            File file = new File(Properties.DATA_FILE);
             if (!file.exists())
                 return;
             try {
-                File backupDir = new File(BACKUP_DIR);
+                File backupDir = new File(Properties.BACKUP_DIR);
                 if (!backupDir.exists())
                     Files.createDirectory(backupDir.toPath());
-                Files.copy(file.toPath(), new File(BACKUP_DIR + "\\" + Util.makeFileNameWithDate(name, "")).toPath());
+                Files.copy(file.toPath(),
+                        new File(Properties.BACKUP_DIR + "\\" + Util.makeFileNameWithDate(name, "")).toPath());
             } catch (Exception e) {
                 Main.showError("Cannot create backup. Looks like your deeds is bad.");
                 e.printStackTrace();

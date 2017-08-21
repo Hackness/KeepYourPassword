@@ -17,6 +17,7 @@ import manager.listener.Listeners;
 import manager.listener.impl.OnDataInitialized;
 import manager.listener.impl.OnDataLoaded;
 import manager.listener.impl.OnWindowLoaded;
+import manager.properties.Properties;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class WindowLoginController extends AbstractController {
         WindowLoadingController loading = Main.createAndShowLoading();
         List<Listener> listeners = new ArrayList<>();
         loading.addProgress(10);
-        if (Main.isDataLoaded())
+        if (Properties.DATA_LOADED)
             loading.addProgress(30);
         else
             //FIXME: can be casted meanwhile data already loaded
@@ -56,10 +57,10 @@ public class WindowLoginController extends AbstractController {
         ThreadPoolManager.getInstance().dependentExecute(() -> {
             DataHolder holder = DataManager.getInstance().getHolder();
             if (holder == null || holder.hashCheck(pwdFld.getText())) {
-                Main.loginPassword = pwdFld.getText();
+                Properties.LOGIN_PASSWORD = pwdFld.getText();
                 DataManager.getInstance().init();
                 Platform.runLater(() -> Main.showScene(NodeType.WINDOW_MAIN.getScene()));
-                Main.setAuthorised();
+                Properties.AUTHORIZED = true;
             } else {
                 Platform.runLater(() -> {
                     Main.showScene(NodeType.WINDOW_LOGIN.getScene());
@@ -67,7 +68,7 @@ public class WindowLoginController extends AbstractController {
                     listeners.forEach(Listener::removeMe);
                 });
             }
-        }, "", "dataLoad");
+        }, "authorization", "dataLoad", "configLoad");
     };
 
     @Override

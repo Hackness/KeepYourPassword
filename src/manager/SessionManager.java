@@ -2,9 +2,11 @@ package manager;
 
 import javafx.beans.value.ChangeListener;
 import javafx.stage.Stage;
+import manager.properties.Properties;
 
 import java.io.File;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Hack
@@ -30,6 +32,8 @@ public class SessionManager {
     }
 
     public void startListening(Stage stage) {
+        if (!Properties.SCHEDULED_LOGOUT)
+            return;
         if (currentStage != null) {
             currentStage.focusedProperty().removeListener(focusListener);
             stopReopenTask();
@@ -45,7 +49,7 @@ public class SessionManager {
     }
 
     public void startReopenTast() {
-        if (shutdown || !Main.isAuthorised())
+        if (shutdown || !Properties.AUTHORIZED)
             return;
         stopReopenTask();
         logoutTask = ThreadPoolManager.getInstance().schedule(() -> {
@@ -56,6 +60,6 @@ public class SessionManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, 300000);
+        }, TimeUnit.MINUTES.toMillis(Properties.LOGOUT_DELAY_MIN));
     }
 }

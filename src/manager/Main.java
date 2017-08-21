@@ -6,11 +6,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import manager.controller.WindowErrorController;
 import manager.controller.WindowLoadingController;
-import manager.controller.WindowMainController;
 import manager.data.DataManager;
 import manager.listener.Listeners;
 import manager.listener.impl.OnDataLoaded;
 import manager.model.instance.LoadingNotifier;
+import manager.properties.ConfigLoader;
+import manager.properties.Properties;
 
 //+ error messages
 //+ delete confirm
@@ -23,22 +24,17 @@ import manager.model.instance.LoadingNotifier;
 //TODO: options page
 //TODO: slf4j integration
 //TODO: url references into browser from location field
+//TODO: global refactor
 public class Main extends Application {
-    private static Stage primaryStage;
-    public static String loginPassword = "";
-    private static WindowMainController mainController;
-    private static boolean debugMode = false;
-    private static boolean dataLoaded = false;
-    private static boolean authorised = false;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         assert setDebugMode();
         DataManager.logging();
         LoadingNotifier.getInstance().init();
-        Main.primaryStage = primaryStage;
-        Listeners.add(OnDataLoaded.class, () -> dataLoaded = true, true);
+        Properties.PRIMARY_STAGE_REF = primaryStage;
+        Listeners.add(OnDataLoaded.class, () -> Properties.DATA_LOADED = true, true);
         ThreadPoolManager.getInstance().dependentExecute(() -> DataManager.getInstance().load(), "dataLoad");
+        ThreadPoolManager.getInstance().dependentExecute(() -> ConfigLoader.getInstance().load(), "configLoad");
         primaryStage.setResizable(false);
         primaryStage.setTitle("KeepYourPassword");
         showScene(NodeType.WINDOW_LOGIN.getScene());
@@ -54,10 +50,11 @@ public class Main extends Application {
      * show some scene in primary stage
      */
     public static void showScene(Scene scene) {
-        primaryStage.close();
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        SessionManager.getInstance().startListening(primaryStage);
+        Stage stage = Properties.PRIMARY_STAGE_REF;
+        stage.close();
+        stage.setScene(scene);
+        stage.show();
+        SessionManager.getInstance().startListening(stage);
     }
 
     /**
@@ -69,10 +66,10 @@ public class Main extends Application {
         stage.setResizable(false);
         stage.setTitle(title);
         stage.setScene(scene);
-        stage.initOwner(primaryStage);
+        stage.initOwner(Properties.PRIMARY_STAGE_REF);
         stage.initModality(Modality.WINDOW_MODAL);
         SessionManager.getInstance().startListening(stage);
-        stage.setOnCloseRequest(e -> SessionManager.getInstance().startListening(primaryStage));
+        stage.setOnCloseRequest(e -> SessionManager.getInstance().startListening(Properties.PRIMARY_STAGE_REF));
         if (wait)
             stage.showAndWait();
         else
@@ -107,44 +104,11 @@ public class Main extends Application {
         showModal(scene, title, true);
     }
 
-    public static boolean isDataLoaded() {
-        return dataLoaded;
-    }
-
     private static boolean setDebugMode() {
-        return (debugMode = true);
-    }
-
-    public static boolean isDebugMode() {
-        return debugMode;
-    }
-
-    public static void setMainController(WindowMainController controller) {
-        mainController = controller;
-    }
-
-    public static WindowMainController getMainController() {
-        return mainController;
+        return (Properties.DEBUG_MODE = true);
     }
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    public static void logout() {
-        loginPassword = "";
-        showScene(NodeType.WINDOW_LOGIN.getScene());
-    }
-
-    public static Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
-    public static boolean isAuthorised() {
-        return authorised;
-    }
-
-    public static void setAuthorised() {
-        Main.authorised = true;
     }
 }

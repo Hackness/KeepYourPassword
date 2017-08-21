@@ -11,6 +11,7 @@ import manager.Main;
 import manager.NodeType;
 import manager.data.DataEntry;
 import manager.data.DataManager;
+import manager.properties.Properties;
 
 import java.net.URL;
 import java.util.*;
@@ -29,7 +30,7 @@ public class WindowMainController extends AbstractPaneController {
     private Map<DataEntry, Node> cache = new LinkedHashMap<>();
 
     public WindowMainController() {
-        Main.setMainController(this);
+        Properties.MAIN_CONTROLLER_REF = this;
     }
 
     @Override
