@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="255.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="5.0" layoutY="4.0" text="Are you sure to delete this data?">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <Label layoutX="30.0" layoutY="23.0" text="Location:" />
+      <Label layoutX="30.0" layoutY="39.0" text="Login:" />
+      <Button fx:id="cancelBtn" layoutX="196.0" layoutY="62.0" mnemonicParsing="false" text="Cancel" />
+      <Button fx:id="confirmBtn" layoutX="134.0" layoutY="62.0" mnemonicParsing="false" text="Confirm" />
+      <Label fx:id="location" layoutX="82.0" layoutY="23.0" text="loc" />
+      <Label fx:id="login" layoutX="68.0" layoutY="39.0" text="login" />
+   </children>
+</AnchorPane>
